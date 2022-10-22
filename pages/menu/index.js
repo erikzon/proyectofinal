@@ -4,10 +4,8 @@ import {
   Window,
   WindowHeader,
   WindowContent,
-  TextField,
   Button,
 } from "react95";
-import "@react95/icons/icons.css";
 
 export default function Home() {
   return (
@@ -43,20 +41,40 @@ export default function Home() {
               gap: "2rem",
             }}
           >
-            
-            <Button type="submit" value="login" disabled={false}>
+            <Button
+              type="submit"
+              value="login"
+              disabled={false}
+              onClick={() => Router.push("/modulo/paciente")}
+            >
               Modulo Paciente
             </Button>
-            <Button type="submit" value="login">
+            <Button
+              type="submit"
+              value="login"
+              onClick={() => Router.push("/modulo/doctor")}
+            >
               Modulo Doctor
             </Button>
-            <Button type="submit" value="login">
+            <Button
+              type="submit"
+              value="login"
+              onClick={() => Router.push("/modulo/medicina")}
+            >
               Modulo Medicina
             </Button>
-            <Button type="submit" value="login">
+            <Button
+              type="submit"
+              value="login"
+              onClick={() => Router.push("/modulo/reportes")}
+            >
               Modulo Reportes
             </Button>
-            <Button type="submit" value="login">
+            <Button
+              type="submit"
+              value="login"
+              onClick={() => Router.push("/modulo/usuarios")}
+            >
               Modulo Usuarios
             </Button>
           </div>
