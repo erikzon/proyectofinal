@@ -2,11 +2,33 @@ import Router from "next/router";
 import { useState, useEffect } from "react";
 import { Window, WindowHeader, WindowContent, Button } from "react95";
 
-export default function Home(props) {
-  useEffect(() => {
-    
-  }, []);
+export async function getServerSideProps(context) {
+  const sql = require("mssql/msnodesqlv8");
+  var config = {
+    database: "BD_Project",
+    server: "ERICK-LAPTO\\SQLEXPRESS",
+    driver: "msnodesqlv8",
+    options: {
+      trustedConnection: true,
+    },
+  };
+  sql.connect(config);
+  var request = new sql.Request();
+  let { recordset } = await request.query(
+    `select ModuloPaciente,ModuloDoctor,ModuloMedicina,ModuloReporte from tipo_usuario 
+	inner join usuario on tipo_usuario.ID_TipoUsuario = usuario.FK_ID_TipoUsuario
+	where usuario.usuario = '${context.query.usuario}'`
+  );
+  console.log(recordset);
+  return {
+    props: { recordset },
+  };
+}
 
+export default function Home({recordset}) {
+  useEffect(() => {
+    console.log(recordset[0].ModuloDoctor);
+  }, []);
   return (
     <div
       style={{
@@ -21,7 +43,7 @@ export default function Home(props) {
     >
       <Window>
         <WindowHeader active={true} className="window-header">
-          <span>Menu</span>
+          <span>Menu {recordset.ModuloPaciente ? "fac" : "foc"}</span>
         </WindowHeader>
         <div style={{ marginTop: 8 }}>
           <img
@@ -43,7 +65,7 @@ export default function Home(props) {
             <Button
               type="submit"
               value="login"
-              disabled={false}
+              disabled={!recordset[0].ModuloPaciente}
               onClick={() => Router.push("/modulo/paciente")}
             >
               Modulo Paciente
@@ -51,6 +73,7 @@ export default function Home(props) {
             <Button
               type="submit"
               value="login"
+              disabled={!recordset[0].ModuloDoctor}
               onClick={() => Router.push("/modulo/doctor")}
             >
               Modulo Doctor
@@ -58,6 +81,7 @@ export default function Home(props) {
             <Button
               type="submit"
               value="login"
+              disabled={!recordset[0].ModuloMedicina}
               onClick={() => Router.push("/modulo/medicina")}
             >
               Modulo Medicina
@@ -72,6 +96,7 @@ export default function Home(props) {
             <Button
               type="submit"
               value="login"
+              disabled={!recordset[0].ModuloReporte}
               onClick={() => Router.push("/modulo/usuarios")}
             >
               Modulo Usuarios

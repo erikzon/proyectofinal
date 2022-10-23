@@ -14,7 +14,7 @@ import {
 export async function getServerSideProps(context) {
   const sql = require("mssql/msnodesqlv8");
   var config = {
-    database: "BDTAREA",
+    database: "BD_Project",
     server: "ERICK-LAPTO\\SQLEXPRESS",
     driver: "msnodesqlv8",
     options: {
@@ -48,7 +48,7 @@ export default function Usuarios({ recordset }) {
         }}
       >
         <Window style={{ width: "95%" }}>
-          <WindowHeader>usuarios</WindowHeader>
+          <WindowHeader>Usuarios</WindowHeader>
           <div
             style={{
               display: "flex",
@@ -87,10 +87,11 @@ export default function Usuarios({ recordset }) {
             </TableHead>
             <TableBody>
               {recordset.map((record) => (
-                <TableRow key={record.IdFiscal}>
-                  <TableDataCell>{record.IdFiscal}</TableDataCell>
-                  <TableDataCell>{record.domicilio}</TableDataCell>
-                  <TableDataCell>{record.nombre}</TableDataCell>
+                <TableRow key={record.Usuario}>
+                  <TableDataCell>{record.Usuario}</TableDataCell>
+                  <TableDataCell>{record.Constraseña}</TableDataCell>
+                  <TableDataCell>{record.FK_ID_TipoUsuario}</TableDataCell>
+                  <TableDataCell>{record.DPI}</TableDataCell>
                   <TableDataCell>
                     <Button>Editar</Button>
                     <Button>Eliminar</Button>

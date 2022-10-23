@@ -9,8 +9,8 @@ import {
 } from "react95";
 
 export default function Home() {
-  const [usuario, setusuario] = useState("erick@miumg.edu.gt");
-  const [contrasena, setcontrasena] = useState("prueba");
+  const [usuario, setusuario] = useState("erick");
+  const [contrasena, setcontrasena] = useState("4125");
   const [mostrarErrorCredencialesIncorrectas, setMostrarErrorCredencialesIncorrectas] = useState(false)
 
   const login = (usuario,contrasena) => {
@@ -19,7 +19,7 @@ export default function Home() {
       .then((response) => response.json())
       .then((datos) => {
         datos.respuesta == 1
-          ? Router.push("/menu")
+          ? Router.push(`/menu?usuario=${usuario}`)
           : setMostrarErrorCredencialesIncorrectas(true);
           setTimeout(() => {
             setMostrarErrorCredencialesIncorrectas(false)
