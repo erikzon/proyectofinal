@@ -9,7 +9,10 @@ import {
   WindowHeader,
   TextField,
   Button,
+  Modal,
+  Fieldset
 } from "react95";
+import { useRouter } from "next/router";
 
 export async function getServerSideProps(context) {
   const sql = require("mssql/msnodesqlv8");
@@ -24,9 +27,7 @@ export async function getServerSideProps(context) {
 
   sql.connect(config);
   var request = new sql.Request();
-  let { recordset } = await request.query(
-    "select nombre, domicilio, IdFiscal from cliente where activo = 1"
-  );
+  let { recordset } = await request.query("exec readusuario");
   console.log(recordset);
   return {
     props: { recordset },
@@ -34,6 +35,21 @@ export async function getServerSideProps(context) {
 }
 
 export default function Usuarios({ recordset }) {
+   const router = useRouter();
+  const refreshData = () => {
+    router.replace(router.asPath);
+  };
+  const activardesactivar = (usuario, activoinactivo) =>{
+    const peticion = fetch(
+      `http://localhost:3000/api/usuarios?usuario=${usuario}&activoinactivo=${activoinactivo?'1':'0'}`,{method: 'DELETE'}
+    );
+    peticion
+      .then((response) => response.json())
+      .then((datos) => {
+        refreshData();
+      })
+      .catch((e) => console.log(e));
+  }
   return (
     <>
       <div
@@ -59,29 +75,14 @@ export default function Usuarios({ recordset }) {
               gap: "6rem",
             }}
           >
-            <TextField
-              fullWidth
-              type="text"
-              placeholder="ingrese un nombre o id"
-              onChange={(e) => {
-                setcontrasena(e.target.value);
-              }}
-            />
-            <Button type="submit" value="login">
-              Buscar
-            </Button>
-            <Button type="submit" value="login">
-              Crear
-            </Button>
+            <Button type="button">Crear</Button>
           </div>
           <Table>
             <TableHead>
               <TableRow>
-                {Object.keys(recordset[0])
-                  .reverse()
-                  .map((cabecera, index) => (
-                    <TableHeadCell key={index}> {cabecera} </TableHeadCell>
-                  ))}
+                {Object.keys(recordset[0]).map((cabecera, index) => (
+                  <TableHeadCell key={index}> {cabecera} </TableHeadCell>
+                ))}
                 <TableHeadCell> Accion </TableHeadCell>
               </TableRow>
             </TableHead>
@@ -90,11 +91,16 @@ export default function Usuarios({ recordset }) {
                 <TableRow key={record.Usuario}>
                   <TableDataCell>{record.Usuario}</TableDataCell>
                   <TableDataCell>{record.Constraseña}</TableDataCell>
+                  <TableDataCell>
+                    {record.ActivoInactivo ? "activo" : "inactivo"}
+                  </TableDataCell>
                   <TableDataCell>{record.FK_ID_TipoUsuario}</TableDataCell>
                   <TableDataCell>{record.DPI}</TableDataCell>
                   <TableDataCell>
                     <Button>Editar</Button>
-                    <Button>Eliminar</Button>
+                    <Button onClick={()=>activardesactivar(record.Usuario,!record.ActivoInactivo)}>
+                      {record.ActivoInactivo ? "desactivar" : "activar"}
+                    </Button>
                   </TableDataCell>
                 </TableRow>
               ))}
