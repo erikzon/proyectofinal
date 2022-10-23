@@ -10,9 +10,11 @@ import {
   TextField,
   Button,
   Modal,
-  Fieldset
+  Fieldset,
 } from "react95";
 import { useRouter } from "next/router";
+import { useState } from "react";
+import Crear from "../../../components/Crear";
 
 export async function getServerSideProps(context) {
   const sql = require("mssql/msnodesqlv8");
@@ -35,13 +37,17 @@ export async function getServerSideProps(context) {
 }
 
 export default function Usuarios({ recordset }) {
-   const router = useRouter();
+  const [modalCrear, setModalCrear] = useState(false);
+  const router = useRouter();
   const refreshData = () => {
     router.replace(router.asPath);
   };
-  const activardesactivar = (usuario, activoinactivo) =>{
+  const activardesactivar = (usuario, activoinactivo) => {
     const peticion = fetch(
-      `http://localhost:3000/api/usuarios?usuario=${usuario}&activoinactivo=${activoinactivo?'1':'0'}`,{method: 'DELETE'}
+      `http://localhost:3000/api/usuarios?usuario=${usuario}&activoinactivo=${
+        activoinactivo ? "1" : "0"
+      }`,
+      { method: "DELETE" }
     );
     peticion
       .then((response) => response.json())
@@ -49,7 +55,7 @@ export default function Usuarios({ recordset }) {
         refreshData();
       })
       .catch((e) => console.log(e));
-  }
+  };
   return (
     <>
       <div
@@ -75,8 +81,11 @@ export default function Usuarios({ recordset }) {
               gap: "6rem",
             }}
           >
-            <Button type="button">Crear</Button>
+            <Button type="button" onClick={() => setModalCrear(!modalCrear)}>
+              {modalCrear ? "Cancelar crear" : "crear"}
+            </Button>
           </div>
+          {modalCrear && <Crear />}
           <Table>
             <TableHead>
               <TableRow>
@@ -98,7 +107,14 @@ export default function Usuarios({ recordset }) {
                   <TableDataCell>{record.DPI}</TableDataCell>
                   <TableDataCell>
                     <Button>Editar</Button>
-                    <Button onClick={()=>activardesactivar(record.Usuario,!record.ActivoInactivo)}>
+                    <Button
+                      onClick={() =>
+                        activardesactivar(
+                          record.Usuario,
+                          !record.ActivoInactivo
+                        )
+                      }
+                    >
                       {record.ActivoInactivo ? "desactivar" : "activar"}
                     </Button>
                   </TableDataCell>

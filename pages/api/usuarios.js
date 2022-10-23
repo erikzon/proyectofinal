@@ -23,13 +23,20 @@ export default async function handler(req, res) {
         if (err) {
           res.status(400).json({ respuesta: 0 });
         } else {
-          res
-            .status(200)
-            .json({ respuesta: 'correcto'});
+          res.status(200).json({ respuesta: "correcto" });
         }
       }
     );
-  } else {
-    res.status(200).json({ respuesta: "en desarrollo" });
+  } else if (req.method === "GET") {
+    await request.query(
+      `select ID_TipoUsuario as value, Nombre as label from Tipo_Usuario`,
+      function (err, recordSet) {
+        if (err) {
+          res.status(400).json({ respuesta: 0 });
+        } else {
+          res.status(200).json(recordSet.recordset);
+        }
+      }
+    );
   }
 }

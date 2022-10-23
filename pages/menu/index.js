@@ -43,7 +43,7 @@ export default function Home({recordset}) {
     >
       <Window>
         <WindowHeader active={true} className="window-header">
-          <span>Menu {recordset.ModuloPaciente ? "fac" : "foc"}</span>
+          <span>Menu</span>
         </WindowHeader>
         <div style={{ marginTop: 8 }}>
           <img
