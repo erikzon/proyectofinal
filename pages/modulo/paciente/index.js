@@ -8,13 +8,14 @@ import {
   TableDataCell,
   Window,
   WindowHeader,
-  WindowContent,
+  TextField,
   Button,
   Select,
   NumberField,
   Progress,
   Checkbox,
 } from "react95";
+import { Link } from "next/link";
 
 export async function getServerSideProps(context) {
   const sql = require("mssql/msnodesqlv8");
@@ -29,10 +30,10 @@ export async function getServerSideProps(context) {
 
   sql.connect(config);
   var request = new sql.Request();
-  let { recordset } = await request.query("select nombre, domicilio, IdFiscal from cliente where activo = 1");
-  let jsonParaEnviar = JSON.stringify(recordset);
-  console.log(JSON.stringify(recordset));
-
+  let { recordset } = await request.query(
+    "select nombre, domicilio, IdFiscal from cliente where activo = 1"
+  );
+  console.log(recordset);
   return {
     props: { recordset },
   };
@@ -54,42 +55,6 @@ export default function paciente({ recordset }) {
       >
         <Window style={{ width: "95%" }}>
           <WindowHeader>Pacientes</WindowHeader>
-          <WindowContent>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  {Object.keys(recordset[0]).map((cabecera, index) => (
-                    <TableHeadCell key={index}> {cabecera} </TableHeadCell>
-                  ))}
-                  <TableHeadCell> Accion </TableHeadCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                  {/* {recordset.map((record,index) => {
-                    <TableRow key={index}>
-                      <TableDataCell>{record[index]}</TableDataCell>
-                    </TableRow>;
-                  })} */}
-                  {/* <TableDataCell>{recordset.length}</TableDataCell>
-                  <TableDataCell>que chingas</TableDataCell>
-                  <TableDataCell>que chingas</TableDataCell> */}
-
-                {recordset.map((record, index) => (
-                  <TableRow key={index}>
-                    {Object.values(recordset[index]).map(
-                      (paciente, otroIndex) => (
-                        <TableDataCell key={otroIndex}>
-                          {paciente}
-                        </TableDataCell>
-                      )
-                    )}
-                    <Button>Editar</Button>
-                    <Button>Eliminar</Button>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </WindowContent>
           <div
             style={{
               display: "flex",
@@ -97,32 +62,49 @@ export default function paciente({ recordset }) {
               marginBottom: 8,
               marginTop: 8,
               alignItems: "flex-end",
+              gap: "6rem",
             }}
           >
-            <Select
-              style={{ marginLeft: 8 }}
-              value={1}
-              onChange={() => {}}
-              options={opt}
-              defaultValue={"10"}
-            ></Select>
-            <span style={{ marginLeft: 8 }}>
-              Page <strong>3 of 10</strong>
-              <span style={{ marginLeft: 8 }}>
-                Go to page:
-                <NumberField
-                  style={{ marginLeft: 8 }}
-                  min={1}
-                  defaultValue={1}
-                  width={130}
-                  onChange={(value) => {
-                    1;
-                    setPageIndex(page);
-                  }}
-                />
-              </span>
-            </span>
+            <TextField
+              fullWidth
+              type="text"
+              placeholder="ingrese un nombre o id"
+              onChange={(e) => {
+                setcontrasena(e.target.value);
+              }}
+            />
+            <Button type="submit" value="login">
+              Buscar
+            </Button>
+            <Button type="submit" value="login">
+              Crear
+            </Button>
           </div>
+          <Table>
+            <TableHead>
+              <TableRow>
+                {Object.keys(recordset[0])
+                  .reverse()
+                  .map((cabecera, index) => (
+                    <TableHeadCell key={index}> {cabecera} </TableHeadCell>
+                  ))}
+                <TableHeadCell> Accion </TableHeadCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {recordset.map((record) => (
+                <TableRow key={record.IdFiscal}>
+                  <TableDataCell>{record.IdFiscal}</TableDataCell>
+                  <TableDataCell>{record.domicilio}</TableDataCell>
+                  <TableDataCell>{record.nombre}</TableDataCell>
+                  <TableDataCell>
+                    <Button>Editar</Button>
+                    <Button>Eliminar</Button>
+                  </TableDataCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </Window>
       </div>
     </>
