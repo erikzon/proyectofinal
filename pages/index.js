@@ -11,9 +11,22 @@ import {
 export default function Home() {
   const [usuario, setusuario] = useState("erick@miumg.edu.gt");
   const [contrasena, setcontrasena] = useState("prueba");
+  const [mostrarErrorCredencialesIncorrectas, setMostrarErrorCredencialesIncorrectas] = useState(false)
 
   const login = (usuario,contrasena) => {
-    Router.push('/menu')
+    const peticion = fetch(`http://localhost:3000/api/login?usuario=${usuario}&contrasena=${contrasena}`);
+    peticion
+      .then((response) => response.json())
+      .then((datos) => {
+        datos.respuesta == 1
+          ? Router.push("/menu")
+          : setMostrarErrorCredencialesIncorrectas(true);
+          setTimeout(() => {
+            setMostrarErrorCredencialesIncorrectas(false)
+          }, 4000);
+      })
+    .catch((e) => console.log(e))
+    
   }
 
   return (
@@ -71,6 +84,9 @@ export default function Home() {
               <Button type="submit" value="login">
                 Iniciar Sesion
               </Button>
+              {mostrarErrorCredencialesIncorrectas && (
+                <h4>Credenciales incorrectas, intente nuevamente.</h4>
+              )}
             </div>
           </form>
         </WindowContent>

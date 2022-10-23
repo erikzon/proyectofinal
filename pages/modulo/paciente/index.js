@@ -1,4 +1,3 @@
-import { useMemo, useRef, useState } from "react";
 import {
   Table,
   TableBody,
@@ -10,12 +9,7 @@ import {
   WindowHeader,
   TextField,
   Button,
-  Select,
-  NumberField,
-  Progress,
-  Checkbox,
 } from "react95";
-import { Link } from "next/link";
 
 export async function getServerSideProps(context) {
   const sql = require("mssql/msnodesqlv8");
@@ -39,7 +33,7 @@ export async function getServerSideProps(context) {
   };
 }
 
-export default function paciente({ recordset }) {
+export default function Paciente({ recordset }) {
   return (
     <>
       <div
@@ -110,9 +104,3 @@ export default function paciente({ recordset }) {
     </>
   );
 }
-export const opt = [
-  { value: 10, label: "10" },
-  { value: 20, label: "20" },
-  { value: 30, label: "30" },
-  { value: 40, label: "40" },
-];
