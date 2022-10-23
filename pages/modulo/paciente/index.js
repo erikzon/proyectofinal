@@ -1,5 +1,4 @@
 import { useMemo, useRef, useState } from "react";
-
 import {
   Table,
   TableBody,
@@ -14,9 +13,32 @@ import {
   Select,
   NumberField,
   Progress,
+  Checkbox,
 } from "react95";
 
-export default function paciente() {
+export async function getServerSideProps(context) {
+  const sql = require("mssql/msnodesqlv8");
+  var config = {
+    database: "BDTAREA",
+    server: "ERICK-LAPTO\\SQLEXPRESS",
+    driver: "msnodesqlv8",
+    options: {
+      trustedConnection: true,
+    },
+  };
+
+  sql.connect(config);
+  var request = new sql.Request();
+  let { recordset } = await request.query("select nombre, domicilio, IdFiscal from cliente where activo = 1");
+  let jsonParaEnviar = JSON.stringify(recordset);
+  console.log(JSON.stringify(recordset));
+
+  return {
+    props: { recordset },
+  };
+}
+
+export default function paciente({ recordset }) {
   return (
     <>
       <div
@@ -36,15 +58,35 @@ export default function paciente() {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableHeadCell>hola</TableHeadCell>
-                  <TableHeadCell>adios</TableHeadCell>
+                  {Object.keys(recordset[0]).map((cabecera, index) => (
+                    <TableHeadCell key={index}> {cabecera} </TableHeadCell>
+                  ))}
+                  <TableHeadCell> Accion </TableHeadCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                <TableRow>
-                  <TableDataCell>miau</TableDataCell>
-                  <TableDataCell>caracatungi</TableDataCell>
-                </TableRow>
+                  {/* {recordset.map((record,index) => {
+                    <TableRow key={index}>
+                      <TableDataCell>{record[index]}</TableDataCell>
+                    </TableRow>;
+                  })} */}
+                  {/* <TableDataCell>{recordset.length}</TableDataCell>
+                  <TableDataCell>que chingas</TableDataCell>
+                  <TableDataCell>que chingas</TableDataCell> */}
+
+                {recordset.map((record, index) => (
+                  <TableRow key={index}>
+                    {Object.values(recordset[index]).map(
+                      (paciente, otroIndex) => (
+                        <TableDataCell key={otroIndex}>
+                          {paciente}
+                        </TableDataCell>
+                      )
+                    )}
+                    <Button>Editar</Button>
+                    <Button>Eliminar</Button>
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
           </WindowContent>

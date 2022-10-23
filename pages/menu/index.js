@@ -1,13 +1,31 @@
 import Router from "next/router";
-import { useState } from "react";
-import {
-  Window,
-  WindowHeader,
-  WindowContent,
-  Button,
-} from "react95";
+import { useState, useEffect } from "react";
+import { Window, WindowHeader, WindowContent, Button } from "react95";
 
-export default function Home() {
+export async function getServerSideProps(context) {
+  const sql = require("mssql/msnodesqlv8");
+  var config = {
+    database: "BDTAREA",
+    server: "ERICK-LAPTO\\SQLEXPRESS",
+    driver: "msnodesqlv8",
+    options: {
+      trustedConnection: true,
+    },
+  };
+
+  sql.connect(config, function (err) { err && console.log(err) });
+  var request = new sql.Request();
+  let {recordset} = await request.query("select * from cliente");
+  return {
+    props: { recordset },
+  };
+}
+
+export default function Home(props) {
+  useEffect(() => {
+    
+  }, []);
+
   return (
     <div
       style={{
