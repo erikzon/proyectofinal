@@ -14,7 +14,7 @@ import {
 export async function getServerSideProps(context) {
   const sql = require("mssql/msnodesqlv8");
   var config = {
-    database: "BDTAREA",
+    database: "BD_Project",
     server: "ERICK-LAPTO\\SQLEXPRESS",
     driver: "msnodesqlv8",
     options: {
@@ -24,9 +24,7 @@ export async function getServerSideProps(context) {
 
   sql.connect(config);
   var request = new sql.Request();
-  let { recordset } = await request.query(
-    "select nombre, domicilio, IdFiscal from cliente where activo = 1"
-  );
+  let { recordset } = await request.query("exec readMedicina");
   console.log(recordset);
   return {
     props: { recordset },
@@ -59,17 +57,6 @@ export default function Medicina({ recordset }) {
               gap: "6rem",
             }}
           >
-            <TextField
-              fullWidth
-              type="text"
-              placeholder="ingrese un nombre o id"
-              onChange={(e) => {
-                setcontrasena(e.target.value);
-              }}
-            />
-            <Button type="submit" value="login">
-              Buscar
-            </Button>
             <Button type="submit" value="login">
               Crear
             </Button>
@@ -77,20 +64,23 @@ export default function Medicina({ recordset }) {
           <Table>
             <TableHead>
               <TableRow>
-                {Object.keys(recordset[0])
-                  .reverse()
-                  .map((cabecera, index) => (
-                    <TableHeadCell key={index}> {cabecera} </TableHeadCell>
-                  ))}
+                {Object.keys(recordset[0]).map((cabecera, index) => (
+                  <TableHeadCell key={index}> {cabecera} </TableHeadCell>
+                ))}
                 <TableHeadCell> Accion </TableHeadCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {recordset.map((record) => (
-                <TableRow key={record.IdFiscal}>
-                  <TableDataCell>{record.IdFiscal}</TableDataCell>
-                  <TableDataCell>{record.domicilio}</TableDataCell>
-                  <TableDataCell>{record.nombre}</TableDataCell>
+                <TableRow key={record.ID_Medicina}>
+                  <TableDataCell>{record.ID_Medicina}</TableDataCell>
+                  <TableDataCell>{record.Nombre}</TableDataCell>
+                  <TableDataCell>{record.Perecedero ? "X" : ""}</TableDataCell>
+                  <TableDataCell>{record.Fecha_Ingreso}</TableDataCell>
+                  <TableDataCell>{record.Fecha_Lote}</TableDataCell>
+                  <TableDataCell>{record.Fecha_Caducidad}</TableDataCell>
+                  <TableDataCell>{record.Casa}</TableDataCell>
+                  <TableDataCell>{record.TipoMedicamento}</TableDataCell>
                   <TableDataCell>
                     <Button>Editar</Button>
                     <Button>Eliminar</Button>

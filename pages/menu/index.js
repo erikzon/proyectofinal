@@ -19,16 +19,12 @@ export async function getServerSideProps(context) {
 	inner join usuario on tipo_usuario.ID_TipoUsuario = usuario.FK_ID_TipoUsuario
 	where usuario.usuario = '${context.query.usuario}'`
   );
-  console.log(recordset);
   return {
     props: { recordset },
   };
 }
 
 export default function Home({recordset}) {
-  useEffect(() => {
-    console.log(recordset[0].ModuloDoctor);
-  }, []);
   return (
     <div
       style={{
@@ -66,7 +62,11 @@ export default function Home({recordset}) {
               type="submit"
               value="login"
               disabled={!recordset[0].ModuloPaciente}
-              onClick={() => Router.push("/modulo/paciente")}
+              onClick={() =>
+                Router.push(
+                  `/modulo/paciente?habilitado=${recordset[0].ModuloDoctor}`
+                )
+              }
             >
               Modulo Paciente
             </Button>
@@ -89,6 +89,7 @@ export default function Home({recordset}) {
             <Button
               type="submit"
               value="login"
+              disabled={!recordset[0].ModuloReporte}
               onClick={() => Router.push("/modulo/reportes")}
             >
               Modulo Reportes

@@ -99,12 +99,11 @@ export default function Usuarios({ recordset }) {
               {recordset.map((record) => (
                 <TableRow key={record.Usuario}>
                   <TableDataCell>{record.Usuario}</TableDataCell>
-                  <TableDataCell>{record.Constraseña}</TableDataCell>
+                  <TableDataCell>{record.Contrasena}</TableDataCell>
                   <TableDataCell>
                     {record.ActivoInactivo ? "activo" : "inactivo"}
                   </TableDataCell>
                   <TableDataCell>{record.FK_ID_TipoUsuario}</TableDataCell>
-                  <TableDataCell>{record.DPI}</TableDataCell>
                   <TableDataCell>
                     <Button>Editar</Button>
                     <Button

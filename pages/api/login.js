@@ -18,7 +18,7 @@ export default async function handler(req, res) {
   var request = new sql.Request();
   if (req.method === "GET") {
     await request.query(
-      `select 1 as respuesta from usuario where Usuario = '${req.query.usuario}' and Constraseña = '${req.query.contrasena}' and ActivoInactivo = 1`,
+      `select 1 as respuesta from usuario where Usuario = '${req.query.usuario}' and Contrasena = '${req.query.contrasena}' and ActivoInactivo = 1`,
       function (err, recordSet) {
         if (err) {
           res.status(400).json({ respuesta: 0 });
