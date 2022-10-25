@@ -9,12 +9,13 @@ import {
   WindowHeader,
   TextField,
   Button,
+  Select,
   Modal,
   Fieldset,
 } from "react95";
 import { useRouter } from "next/router";
-import { useState } from "react";
-import Crear from "../../../components/Crear";
+
+import { useState, useEffect } from "react";
 
 export async function getServerSideProps(context) {
   const sql = require("mssql/msnodesqlv8");
@@ -56,6 +57,26 @@ export default function Usuarios({ recordset }) {
       })
       .catch((e) => console.log(e));
   };
+
+  const [usuario, setusuario] = useState("erick");
+  const [contrasena, setcontrasena] = useState("4125");
+  const [tipoUsuario, setTipoUsuario] = useState(1);
+  const [dpi, setDPI] = useState();
+  const [opt, setOPT] = useState([]);
+
+  useEffect(() => {
+    const peticion = fetch(`http://localhost:3000/api/usuarios`, {
+      method: "GET",
+    });
+    peticion
+      .then((response) => response.json())
+      .then((datos) => {
+        console.log(datos);
+        setOPT(datos);
+      })
+      .catch((e) => console.log(e));
+  }, []);
+
   return (
     <>
       <div
@@ -85,7 +106,100 @@ export default function Usuarios({ recordset }) {
               {modalCrear ? "Cancelar crear" : "crear"}
             </Button>
           </div>
-          {modalCrear && <Crear />}
+          {modalCrear && (
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                login(usuario, contrasena);
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyItems: "flex-start",
+                  gap: "1rem",
+                  justifyContent: "space-evenly",
+                  flexDirection: "row",
+                  padding: "1rem",
+                }}
+              >
+                <section>
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "1rem",
+                      alignItems: "center",
+                    }}
+                  >
+                    Usuario
+                    <TextField
+                      placeholder="User Name"
+                      fullWidth
+                      value={usuario}
+                      onChange={(e) => {
+                        setusuario(e.target.value);
+                      }}
+                    />
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "1rem",
+                      alignItems: "center",
+                    }}
+                  >
+                    Contrasena
+                    <TextField
+                      placeholder="contrasena"
+                      fullWidth
+                      type="password"
+                      value={contrasena}
+                      onChange={(e) => {
+                        setcontrasena(e.target.value);
+                      }}
+                    />
+                  </div>
+                </section>
+                <section>
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "1rem",
+                      alignItems: "center",
+                    }}
+                  >
+                    DPI
+                    <TextField
+                      placeholder="contrasena"
+                      fullWidth
+                      type="text"
+                      value={contrasena}
+                      onChange={(e) => {
+                        setcontrasena(e.target.value);
+                      }}
+                    />
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "1rem",
+                      alignItems: "center",
+                    }}
+                  >
+                    Tipo usuario
+                    <Select
+                      options={opt}
+                      onChange={(e) => {
+                        setTipoUsuario(e.target.value);
+                      }}
+                    />
+                  </div>
+                </section>
+                <Button type="button">Crear</Button>
+              </div>
+            </form>
+          )}
           <Table>
             <TableHead>
               <TableRow>

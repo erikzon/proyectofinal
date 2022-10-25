@@ -28,7 +28,6 @@ export async function getServerSideProps(context) {
   sql.connect(config);
   var request = new sql.Request();
   let { recordset } = await request.query("exec readDoctor");
-  console.log(recordset);
   return {
     props: { recordset },
   };
@@ -40,7 +39,6 @@ export default function Doctor({ recordset }) {
     router.replace(router.asPath);
   };
 
-  const [usarBusqueda, setUsarBusqueda] = useState(false);
   const [modalCrear, setModalCrear] = useState(false);
 
   const activardesactivar = (usuario, activoinactivo) => {
@@ -54,7 +52,6 @@ export default function Doctor({ recordset }) {
       .then((response) => response.json())
       .then((datos) => {
         refreshData();
-        setUsarBusqueda(false);
       })
       .catch((e) => console.log(e));
   };
@@ -68,7 +65,6 @@ export default function Doctor({ recordset }) {
       .then((response) => response.json())
       .then((datos) => {
         refreshData();
-        setUsarBusqueda(false);
         setModalCrear(false);
       })
       .catch((e) => console.log(e));
