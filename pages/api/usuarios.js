@@ -38,5 +38,28 @@ export default async function handler(req, res) {
         }
       }
     );
+  } else if (req.method === "POST") {
+    await request.query(
+      `exec createUsuario '${req.query.usuario}','${req.query.contrasena}',1,${req.query.tipo}`,
+      function (err, recordSet) {
+        if (err) {
+          res.status(400).json({ respuesta: 0 });
+        } else {
+          res.status(200).json({ respuesta: "correcto" });
+        }
+      }
+    );
+  } else if (req.method === "PUT") {
+    `update usuario set Usuario = '${req.query.usuario}', Contrasena = '${req.query.contrasena}', FK_ID_TipoUsuario=${req.query.tipo} where Usuario = '${req.query.usuario}'`;
+    await request.query(
+      `update usuario set Usuario = '${req.query.usuario}', Contrasena = '${req.query.contrasena}', FK_ID_TipoUsuario=${req.query.tipo} where Usuario = '${req.query.usuario}'`,
+      function (err, recordSet) {
+        if (err) {
+          res.status(400).json({ respuesta: 0 });
+        } else {
+          res.status(200).json({ respuesta: "correcto" });
+        }
+      }
+    );
   }
 }
