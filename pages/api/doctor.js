@@ -18,7 +18,7 @@ export default async function handler(req, res) {
   var request = new sql.Request();
   if (req.method === "DELETE") {
     await request.query(
-      `exec deletePaciente '${req.query.usuario}', ${req.query.activoinactivo}`,
+      `exec deleteDoctor '${req.query.usuario}', ${req.query.activoinactivo}`,
       function (err, recordSet) {
         if (err) {
           res.status(400).json({ respuesta: 0 });
@@ -29,10 +29,7 @@ export default async function handler(req, res) {
     );
   } else if (req.method === "GET") {
     await request.query(
-      `select * from Paciente where Identificador like '%${req.query.busqueda.replace(
-        " ",
-        "%"
-      )}%' or Nombre like '%${req.query.busqueda}%'`,
+      `select ID_TipoUsuario as value, Nombre as label from Tipo_Usuario`,
       function (err, recordSet) {
         if (err) {
           res.status(400).json({ respuesta: 0 });
@@ -42,8 +39,12 @@ export default async function handler(req, res) {
       }
     );
   } else if (req.method === "POST") {
+    //exec createDoctor 'DR. Rey','Ciceron',1236,1,6
+    console.log(
+      `delete Doctor where Apellido = '${req.query.apellido}'; exec createDoctor '${req.query.usuario}','${req.query.apellido}',${req.query.colegiado},1,${req.query.descripcion}`
+    );
     await request.query(
-      `delete Paciente where Nombre = '${req.query.usuario}'; exec createPaciente '${req.query.usuario}','${req.query.apellido}','${req.query.residencia}',${req.query.contacto},'${req.query.estado}',1,${req.query.edad}`,
+      `; exec createDoctor '${req.query.usuario}','${req.query.apellido}',${req.query.colegiado},1,4`,
       function (err, recordSet) {
         if (err) {
           res.status(400).json({ respuesta: 0 });
