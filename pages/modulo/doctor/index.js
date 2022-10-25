@@ -9,10 +9,11 @@ import {
   WindowHeader,
   TextField,
   Button,
+  Select
 } from "react95";
 
 import { useRouter } from "next/router";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 
 export async function getServerSideProps(context) {
   const sql = require("mssql/msnodesqlv8");
@@ -34,6 +35,7 @@ export async function getServerSideProps(context) {
 }
 
 export default function Doctor({ recordset }) {
+  const [opt, setOPT] = useState([]);
   const router = useRouter();
   const refreshData = () => {
     router.replace(router.asPath);
@@ -70,18 +72,49 @@ export default function Doctor({ recordset }) {
       .catch((e) => console.log(e));
   };
 
-  const nombreRef = useRef(" ");
-  const apellidoRef = useRef(" ");
-  const colegiadoRef = useRef(" ");
+  const editarDoctor = () => {
+    const peticion = fetch(
+      `http://localhost:3000/api/doctor?usuario=${nombreRef.current.value}&apellido=${apellidoRef.current.value}&colegiado=${colegiadoRef.current.value}`,
+      { method: "PUT" }
+    );
+    peticion
+      .then((response) => response.json())
+      .then((datos) => {
+        refreshData();
+        setModalCrear(false);
+      })
+      .catch((e) => console.log(e));
+  };
 
+  const nombreRef = useRef();
+  const apellidoRef = useRef();
+  const colegiadoRef = useRef();
+  const especialidadRef = useRef();
+
+  const [modoUpdate, setModoUpdate] = useState(false);
   const editar = (record) => {
     setModalCrear(true);
     setTimeout(() => {
       nombreRef.current.value = record.Nombre;
       apellidoRef.current.value = record.Apellido;
-      colegiadoRef.current.value = record.Descripcion;
+      colegiadoRef.current.value = record.Colegiado;
+      especialidadRef.current.value = record.Descripcion;
     }, 200);
+    setModoUpdate(true);
   };
+
+  useEffect(() => {
+    const peticion = fetch(`http://localhost:3000/api/especialidades`, {
+      method: "GET",
+    });
+    peticion
+      .then((response) => response.json())
+      .then((datos) => {
+        console.log(datos);
+        setOPT(datos);
+      })
+      .catch((e) => console.log(e));
+  }, []);
 
   return (
     <>
@@ -108,17 +141,18 @@ export default function Doctor({ recordset }) {
               gap: "6rem",
             }}
           >
-            <Button type="button" onClick={() => setModalCrear(!modalCrear)}>
+            <Button
+              type="button"
+              onClick={() => {
+                setModalCrear(!modalCrear);
+                setModoUpdate(false);
+              }}
+            >
               {modalCrear ? "Cancelar" : "crear"}
             </Button>
           </div>
           {modalCrear && (
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                login(usuario, contrasena);
-              }}
-            >
+            <form>
               <div
                 style={{
                   display: "flex",
@@ -163,10 +197,30 @@ export default function Doctor({ recordset }) {
                     colegiado
                     <TextField fullWidth type="text" ref={colegiadoRef} />
                   </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "1rem",
+                      alignItems: "center",
+                    }}
+                  >
+                    Especialidad
+                    <Select options={opt} ref={especialidadRef} />
+                  </div>
                 </section>
-                <Button type="button" onClick={() => enviarFormularioDoctor()}>
-                  Crear
-                </Button>
+
+                {modoUpdate ? (
+                  <Button type="button" onClick={() => editarDoctor()}>
+                    Editar
+                  </Button>
+                ) : (
+                  <Button
+                    type="button"
+                    onClick={() => enviarFormularioDoctor()}
+                  >
+                    Crear
+                  </Button>
+                )}
               </div>
             </form>
           )}

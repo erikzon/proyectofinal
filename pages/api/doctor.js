@@ -39,12 +39,25 @@ export default async function handler(req, res) {
       }
     );
   } else if (req.method === "POST") {
-    //exec createDoctor 'DR. Rey','Ciceron',1236,1,6
     console.log(
-      `delete Doctor where Apellido = '${req.query.apellido}'; exec createDoctor '${req.query.usuario}','${req.query.apellido}',${req.query.colegiado},1,${req.query.descripcion}`
+      `exec createDoctor '${req.query.usuario}','${req.query.apellido}',${req.query.colegiado},1,4`
     );
     await request.query(
-      `; exec createDoctor '${req.query.usuario}','${req.query.apellido}',${req.query.colegiado},1,4`,
+      `exec createDoctor '${req.query.usuario}','${req.query.apellido}',${req.query.colegiado},1,4`,
+      function (err, recordSet) {
+        if (err) {
+          res.status(400).json({ respuesta: 0 });
+        } else {
+          res.status(200).json({ respuesta: "correcto" });
+        }
+      }
+    );
+  } else if (req.method === "PUT") {
+    console.log(
+      `update Doctor set Nombre = '${req.query.usuario}', Apellido = '${req.query.apellido}', colegiado = ${req.query.colegiado} where colegiado = '${req.query.colegiado}'`
+    );
+    await request.query(
+      `update Doctor set Nombre = '${req.query.usuario}', Apellido = '${req.query.apellido}', colegiado = ${req.query.colegiado} where colegiado = '${req.query.colegiado}'`,
       function (err, recordSet) {
         if (err) {
           res.status(400).json({ respuesta: 0 });
