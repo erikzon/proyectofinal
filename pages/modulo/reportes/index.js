@@ -1,39 +1,16 @@
 import {
-  Table,
-  TableBody,
-  TableHead,
-  TableRow,
-  TableHeadCell,
-  TableDataCell,
   Window,
   WindowHeader,
-  TextField,
-  Button,
 } from "react95";
 
-export async function getServerSideProps(context) {
-  const sql = require("mssql/msnodesqlv8");
-  var config = {
-    database: "BDTAREA",
-    server: "ERICK-LAPTO\\SQLEXPRESS",
-    driver: "msnodesqlv8",
-    options: {
-      trustedConnection: true,
-    },
-  };
+import ReporteUno from "../../../components/ReporteUno";
+import ReporteDos from "../../../components/ReporteDos";
+import ReporteTres from "../../../components/ReporteTres";
+import ReporteCuatro from "../../../components/ReporteCuatro";
+import ReporteCinco from "../../../components/ReporteCinco";
+import ReporteSeis from "../../../components/ReporteSeis";
 
-  sql.connect(config);
-  var request = new sql.Request();
-  let { recordset } = await request.query(
-    "select nombre, domicilio, IdFiscal from cliente where activo = 1"
-  );
-  console.log(recordset);
-  return {
-    props: { recordset },
-  };
-}
-
-export default function Reportes({ recordset }) {
+export default function Reportes(props) {
   return (
     <>
       <div
@@ -47,58 +24,48 @@ export default function Reportes({ recordset }) {
           backgroundColor: "rgb(0, 128, 128)",
         }}
       >
-        <Window style={{ width: "95%" }}>
+        <Window
+          resizable
+          style={{
+            width: "95%",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+          }}
+        >
           <WindowHeader>Reportes</WindowHeader>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "flex-end",
-              marginBottom: 8,
-              marginTop: 8,
-              alignItems: "flex-end",
-              gap: "6rem",
-            }}
-          >
-            <TextField
-              fullWidth
-              type="text"
-              placeholder="ingrese un nombre o id"
-              onChange={(e) => {
-                setcontrasena(e.target.value);
-              }}
-            />
-            <Button type="submit" value="login">
-              Buscar
-            </Button>
-            <Button type="submit" value="login">
-              Crear
-            </Button>
+          <h4>1. Los pacientes que más visitas han tenido. </h4>
+          <div style={{ width: "95%", margin: "0 auto" }}>
+            <ReporteUno />
           </div>
-          <Table>
-            <TableHead>
-              <TableRow>
-                {Object.keys(recordset[0])
-                  .reverse()
-                  .map((cabecera, index) => (
-                    <TableHeadCell key={index}> {cabecera} </TableHeadCell>
-                  ))}
-                <TableHeadCell> Accion </TableHeadCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {recordset.map((record) => (
-                <TableRow key={record.IdFiscal}>
-                  <TableDataCell>{record.IdFiscal}</TableDataCell>
-                  <TableDataCell>{record.domicilio}</TableDataCell>
-                  <TableDataCell>{record.nombre}</TableDataCell>
-                  <TableDataCell>
-                    <Button>Editar</Button>
-                    <Button>Eliminar</Button>
-                  </TableDataCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <h4>
+            2. Conteo y visualización de pacientes por enfermedad o accidente
+            (si aplica).
+          </h4>
+          <div style={{ width: "30%", margin: "0 auto" }}>
+            <ReporteDos />
+          </div>
+          <h4>3. Cantidad de personas atendidos por médico. </h4>
+          <div style={{ width: "30%", margin: "0 auto" }}>
+            <ReporteTres />
+          </div>
+          <h4>
+            4. Los suministros o medicinas que más se han dado a los pacientes.
+          </h4>
+          <div style={{ width: "30%", margin: "0 auto" }}>
+            <ReporteCuatro />
+          </div>
+          <h4>
+            5. Cálculo de edades de los pacientes que más se han enfermado por
+            mes.
+          </h4>
+          <div style={{ width: "30%", margin: "0 auto" }}>
+            <ReporteCinco />
+          </div>
+          <h4>6. Antecedentes médicos de enfermedad por paciente. </h4>
+          <div style={{ width: "98%", margin: "0 auto" }}>
+            <ReporteSeis />
+          </div>
         </Window>
       </div>
     </>
