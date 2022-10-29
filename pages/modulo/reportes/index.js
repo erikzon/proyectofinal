@@ -35,35 +35,47 @@ export default function Reportes(props) {
         >
           <WindowHeader>Reportes</WindowHeader>
           <h4>1. Los pacientes que más visitas han tenido. </h4>
-          <div style={{ width: "95%", margin: "0 auto" }}>
+          <div
+            style={{ width: "95%", margin: "0 auto", paddingBottom: "1rem" }}
+          >
             <ReporteUno />
           </div>
           <h4>
             2. Conteo y visualización de pacientes por enfermedad o accidente
             (si aplica).
           </h4>
-          <div style={{ width: "30%", margin: "0 auto" }}>
+          <div
+            style={{ width: "30%", margin: "0 auto", paddingBottom: "1rem" }}
+          >
             <ReporteDos />
           </div>
           <h4>3. Cantidad de personas atendidos por médico. </h4>
-          <div style={{ width: "30%", margin: "0 auto" }}>
+          <div
+            style={{ width: "30%", margin: "0 auto", paddingBottom: "1rem" }}
+          >
             <ReporteTres />
           </div>
           <h4>
             4. Los suministros o medicinas que más se han dado a los pacientes.
           </h4>
-          <div style={{ width: "30%", margin: "0 auto" }}>
+          <div
+            style={{ width: "30%", margin: "0 auto", paddingBottom: "1rem" }}
+          >
             <ReporteCuatro />
           </div>
           <h4>
             5. Cálculo de edades de los pacientes que más se han enfermado por
             mes.
           </h4>
-          <div style={{ width: "30%", margin: "0 auto" }}>
+          <div
+            style={{ width: "30%", margin: "0 auto", paddingBottom: "1rem" }}
+          >
             <ReporteCinco />
           </div>
           <h4>6. Antecedentes médicos de enfermedad por paciente. </h4>
-          <div style={{ width: "98%", margin: "0 auto" }}>
+          <div
+            style={{ width: "98%", margin: "0 auto", paddingBottom: "1rem" }}
+          >
             <ReporteSeis />
           </div>
         </Window>
